@@ -2,7 +2,7 @@ import re
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.constants import ValidationConstants
+from app.constants import ErrorMessages, ValidationConstants
 
 
 class LoginInput(BaseModel):
@@ -27,7 +27,7 @@ class LoginInput(BaseModel):
     @classmethod
     def validate_password(cls, value: str) -> str:
         if not re.fullmatch(ValidationConstants.User.PASSWORD_REGEX, value):
-            raise ValueError("Invalid password format.")
+            raise ValueError(ErrorMessages.INVALID_PASSWORD_FORMAT)
         return value
 
 
