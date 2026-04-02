@@ -4,6 +4,11 @@ class BusinessException(Exception):
         super().__init__(message)
 
 
-class InvalidCredentialsError(BusinessException):
+class InvalidCredentialsException(BusinessException):
     def __init__(self, message: str = "Invalid email or password."):
+        super().__init__(message)
+
+
+class ConflictException(BusinessException):
+    def __init__(self, message: str = "Conflict occurred."):
         super().__init__(message)
