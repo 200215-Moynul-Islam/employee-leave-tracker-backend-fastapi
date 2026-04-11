@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.constants import ResponseMessages
 from app.core.config import settings
 from app.db.dependencies import get_db
 from app.schemas import ApiResponse, AuthTokenData, LoginInput
@@ -23,6 +24,6 @@ async def login(
 
     return ApiResponse[AuthTokenData](
         success=True,
-        message="Login successful.",
+        message=ResponseMessages.LOGIN_SUCCESSFUL,
         data=auth_token,
     )

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.constants import Role
+from app.constants import ResponseMessages, Role
 from app.dependencies import authorize_roles
 from app.db.dependencies import get_db
 from app.schemas import ApiResponse, UserCreate, UserRead
@@ -26,7 +26,7 @@ async def create_user(
 
     return ApiResponse[UserRead](
         success=True,
-        message="User created successfully.",
+        message=ResponseMessages.USER_CREATED_SUCCESSFULLY,
         data=user,
     )
 
@@ -45,6 +45,6 @@ async def get_all_employees(
 
     return ApiResponse[list[UserRead]](
         success=True,
-        message="Employees retrieved successfully.",
+        message=ResponseMessages.EMPLOYEES_RETRIEVED_SUCCESSFULLY,
         data=employees,
     )
