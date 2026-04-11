@@ -28,3 +28,8 @@ class UserService:
         user = await self.user_repository.create(user)
 
         return UserRead.model_validate(user)
+
+    async def get_all_employees(self) -> list[UserRead]:
+        employees = await self.user_repository.get_all_employees()
+
+        return [UserRead.model_validate(employee) for employee in employees]
