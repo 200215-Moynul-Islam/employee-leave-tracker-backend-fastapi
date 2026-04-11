@@ -3,7 +3,11 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
-from app.core.exceptions import BusinessException, InvalidCredentialsError
+from app.core.exceptions import (
+    BusinessException,
+    ConflictException,
+    InvalidCredentialsException,
+)
 from app.schemas import ApiResponse
 
 
@@ -60,10 +64,10 @@ def register_exception_handlers(app: FastAPI) -> None:
             content=response.model_dump(),
         )
 
-    @app.exception_handler(InvalidCredentialsError)
+    @app.exception_handler(InvalidCredentialsException)
     async def invalid_credentials_exception_handler(
         request: Request,
-        exc: InvalidCredentialsError,
+        exc: InvalidCredentialsException,
     ) -> JSONResponse:
         response = ApiResponse(
             success=False,
@@ -73,6 +77,22 @@ def register_exception_handlers(app: FastAPI) -> None:
 
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
+            content=response.model_dump(),
+        )
+
+    @app.exception_handler(ConflictException)
+    async def conflict_exception_handler(
+        request: Request,
+        exc: ConflictException,
+    ) -> JSONResponse:
+        response = ApiResponse(
+            success=False,
+            message="Request failed.",
+            errors=[exc.message],
+        )
+
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
             content=response.model_dump(),
         )
 

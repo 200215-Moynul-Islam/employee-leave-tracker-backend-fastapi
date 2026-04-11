@@ -15,8 +15,8 @@ async def login(
     login_input: LoginInput,
     db: AsyncSession = Depends(get_db),
 ) -> ApiResponse[AuthTokenData]:
-    auth_token = await AuthService.authenticate_user(
-        db=db,
+    auth_service = AuthService(db)
+    auth_token = await auth_service.authenticate_user(
         login_input=login_input,
         expires_in_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
     )
