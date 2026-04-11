@@ -29,3 +29,22 @@ async def create_user(
         message="User created successfully.",
         data=user,
     )
+
+
+@router.get(
+    "/employees",
+    response_model=ApiResponse[list[UserRead]],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(authorize_roles(Role.ADMIN))],
+)
+async def get_all_employees(
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[list[UserRead]]:
+    user_service = UserService(db)
+    employees = await user_service.get_all_employees()
+
+    return ApiResponse[list[UserRead]](
+        success=True,
+        message="Employees retrieved successfully.",
+        data=employees,
+    )
