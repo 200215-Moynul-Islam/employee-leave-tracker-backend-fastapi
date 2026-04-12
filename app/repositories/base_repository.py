@@ -15,10 +15,8 @@ class BaseRepository(Generic[TBaseModel]):
         self.db = db
         self.model = model
 
-    async def create(self, instance: TBaseModel) -> TBaseModel:
+    def create(self, instance: TBaseModel) -> None:
         self.db.add(instance)
-        await self.db.commit()
-        return instance
 
 
 class EntityBaseRepository(BaseRepository[TEntityBaseModel], Generic[TEntityBaseModel]):

@@ -27,7 +27,8 @@ class UserService:
             role=Role.EMPLOYEE,
             password_hash=hash_password(user_create.password),
         )
-        user = await self.user_repository.create(user)
+        self.user_repository.create(user)
+        await self.user_repository.db.commit()
 
         return UserRead.model_validate(user)
 
