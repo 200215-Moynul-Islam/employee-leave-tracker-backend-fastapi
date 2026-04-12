@@ -24,6 +24,6 @@ async def login(
 
     return ApiResponse[AuthTokenData](
         success=True,
-        message=ResponseMessages.LOGIN_SUCCESSFUL,
+        message=ResponseMessages.LOGIN_SUCCESS,
         data=auth_token,
     )

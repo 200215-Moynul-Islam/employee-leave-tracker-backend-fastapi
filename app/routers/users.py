@@ -28,7 +28,7 @@ async def create_user(
 
     return ApiResponse[UserRead](
         success=True,
-        message=ResponseMessages.USER_CREATED_SUCCESSFULLY,
+        message=ResponseMessages.USER_CREATION_SUCCESS,
         data=user,
     )
 
@@ -47,7 +47,7 @@ async def get_all_employees(
 
     return ApiResponse[list[UserRead]](
         success=True,
-        message=ResponseMessages.EMPLOYEES_RETRIEVED_SUCCESSFULLY,
+        message=ResponseMessages.EMPLOYEES_RETRIEVAL_SUCCESS,
         data=employees,
     )
 
@@ -68,7 +68,7 @@ async def update_user(
 
     return ApiResponse[UserRead](
         success=True,
-        message=ResponseMessages.USER_UPDATED_SUCCESSFULLY,
+        message=ResponseMessages.USER_UPDATE_SUCCESS,
         data=user,
     )
 
@@ -88,7 +88,7 @@ async def deactivate_user(
 
     return ApiResponse[None](
         success=True,
-        message=ResponseMessages.USER_DEACTIVATED_SUCCESSFULLY,
+        message=ResponseMessages.USER_DELETION_SUCCESS,
     )
 
 
@@ -108,5 +108,5 @@ async def update_user_password(
 
     return ApiResponse[None](
         success=True,
-        message=ResponseMessages.USER_PASSWORD_UPDATED_SUCCESSFULLY,
+        message=ResponseMessages.PASSWORD_UPDATE_SUCCESS,
     )
