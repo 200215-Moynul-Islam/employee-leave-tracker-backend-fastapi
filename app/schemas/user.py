@@ -71,6 +71,21 @@ class UserUpdate(BaseModel):
         return value
 
 
+class PasswordUpdate(BaseModel):
+    password: str = Field(
+        ...,
+        min_length=ValidationConstants.User.MIN_PASSWORD_LENGTH,
+        max_length=ValidationConstants.User.MAX_PASSWORD_LENGTH,
+    )
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value: str) -> str:
+        if not re.fullmatch(ValidationConstants.User.PASSWORD_REGEX, value):
+            raise ValueError(ErrorMessages.INVALID_PASSWORD_FORMAT)
+        return value
+
+
 class UserRead(BaseModel):
     """User returned by the API; excludes secrets such as password_hash."""
 

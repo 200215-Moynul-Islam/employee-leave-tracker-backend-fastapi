@@ -6,6 +6,7 @@ class ResponseMessages:
     EMPLOYEES_RETRIEVED_SUCCESSFULLY = "Employees retrieved successfully."
     USER_DEACTIVATED_SUCCESSFULLY = "User deactivated successfully."
     USER_UPDATED_SUCCESSFULLY = "User updated successfully."
+    USER_PASSWORD_UPDATED_SUCCESSFULLY = "User password updated successfully."
     VALIDATION_FAILED = "Validation failed."
     REQUEST_FAILED = "Request failed."
     LOGIN_FAILED = "Login failed."
