@@ -13,7 +13,7 @@ class LeaveRequestCreate(BaseModel):
     @model_validator(mode="after")
     def validate_dates(self) -> "LeaveRequestCreate":
         if self.end_date < self.start_date:
-            raise ValueError(ErrorMessages.INVALID_END_DATE_FORMAT)
+            raise ValueError(ErrorMessages.INVALID_END_DATE)
 
         return self
 
