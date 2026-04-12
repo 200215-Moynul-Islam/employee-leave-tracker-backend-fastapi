@@ -6,7 +6,7 @@ from app.constants import ErrorMessages, Role
 from app.core.exceptions import ConflictException, NotFoundException
 from app.models import User
 from app.repositories.user_repository import UserRepository
-from app.schemas import UserCreate, UserRead, UserUpdate
+from app.schemas import PasswordUpdate, UserCreate, UserRead, UserUpdate
 from app.utils.password_helper import hash_password
 
 
@@ -65,5 +65,15 @@ class UserService:
             raise NotFoundException(ErrorMessages.USER_NOT_FOUND)
 
         user.is_deleted = True
+
+        await self.user_repository.commit()
+
+    async def update_password(self, user_id: UUID, password_update: PasswordUpdate) -> None:
+        user = await self.user_repository.get_active_by_id(user_id)
+
+        if user is None:
+            raise NotFoundException(ErrorMessages.USER_NOT_FOUND)
+
+        user.password_hash = hash_password(password_update.password)
 
         await self.user_repository.commit()

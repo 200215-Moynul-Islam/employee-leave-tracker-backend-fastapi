@@ -1,11 +1,12 @@
 class ResponseMessages:
     """User-facing strings for API responses."""
 
-    LOGIN_SUCCESSFUL = "Login successful."
-    USER_CREATED_SUCCESSFULLY = "User created successfully."
-    EMPLOYEES_RETRIEVED_SUCCESSFULLY = "Employees retrieved successfully."
-    USER_DEACTIVATED_SUCCESSFULLY = "User deactivated successfully."
-    USER_UPDATED_SUCCESSFULLY = "User updated successfully."
+    LOGIN_SUCCESS = "Login successful."
+    USER_CREATION_SUCCESS = "User created successfully."
+    EMPLOYEES_RETRIEVAL_SUCCESS = "Employees retrieved successfully."
+    USER_DELETION_SUCCESS = "User deactivated successfully."
+    USER_UPDATE_SUCCESS = "User updated successfully."
+    PASSWORD_UPDATE_SUCCESS = "User password updated successfully."
     VALIDATION_FAILED = "Validation failed."
     REQUEST_FAILED = "Request failed."
     LOGIN_FAILED = "Login failed."

@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.constants import ResponseMessages, Role
-from app.dependencies import authorize_roles
+from app.dependencies import authorize_roles, validate_token_and_get_payload
 from app.db.dependencies import get_db
-from app.schemas import ApiResponse, UserCreate, UserRead, UserUpdate
+from app.schemas import ApiResponse, PasswordUpdate, UserCreate, UserRead, UserUpdate
 from app.services.user_service import UserService
 
 
@@ -28,7 +28,7 @@ async def create_user(
 
     return ApiResponse[UserRead](
         success=True,
-        message=ResponseMessages.USER_CREATED_SUCCESSFULLY,
+        message=ResponseMessages.USER_CREATION_SUCCESS,
         data=user,
     )
 
@@ -47,7 +47,7 @@ async def get_all_employees(
 
     return ApiResponse[list[UserRead]](
         success=True,
-        message=ResponseMessages.EMPLOYEES_RETRIEVED_SUCCESSFULLY,
+        message=ResponseMessages.EMPLOYEES_RETRIEVAL_SUCCESS,
         data=employees,
     )
 
@@ -68,7 +68,7 @@ async def update_user(
 
     return ApiResponse[UserRead](
         success=True,
-        message=ResponseMessages.USER_UPDATED_SUCCESSFULLY,
+        message=ResponseMessages.USER_UPDATE_SUCCESS,
         data=user,
     )
 
@@ -88,5 +88,25 @@ async def deactivate_user(
 
     return ApiResponse[None](
         success=True,
-        message=ResponseMessages.USER_DEACTIVATED_SUCCESSFULLY,
+        message=ResponseMessages.USER_DELETION_SUCCESS,
+    )
+
+
+@router.patch(
+    "/me/password",
+    response_model=ApiResponse[None],
+    status_code=status.HTTP_200_OK,
+)
+async def update_user_password(
+    password_update: PasswordUpdate,
+    db: AsyncSession = Depends(get_db),
+    token_payload: dict[str, str] = Depends(validate_token_and_get_payload),
+) -> ApiResponse[None]:
+    user_service = UserService(db)
+    current_user_id = UUID(token_payload["sub"])
+    await user_service.update_password(current_user_id, password_update)
+
+    return ApiResponse[None](
+        success=True,
+        message=ResponseMessages.PASSWORD_UPDATE_SUCCESS,
     )
