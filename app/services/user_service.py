@@ -28,7 +28,7 @@ class UserService:
             password_hash=hash_password(user_create.password),
         )
         self.user_repository.create(user)
-        await self.user_repository.db.commit()
+        await self.user_repository.commit()
 
         return UserRead.model_validate(user)
 
@@ -54,7 +54,7 @@ class UserService:
         if "name" in update_data:
             user.name = update_data["name"]
 
-        await self.user_repository.db.commit()
+        await self.user_repository.commit()
 
         return UserRead.model_validate(user)
 
@@ -66,4 +66,4 @@ class UserService:
 
         user.is_deleted = True
 
-        await self.user_repository.db.commit()
+        await self.user_repository.commit()
