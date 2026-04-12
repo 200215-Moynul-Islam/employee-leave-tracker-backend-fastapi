@@ -46,6 +46,31 @@ class UserCreate(BaseModel):
         return value
 
 
+class UserUpdate(BaseModel):
+    email: EmailStr | None = Field(
+        default=None,
+        max_length=ValidationConstants.User.MAX_EMAIL_LENGTH,
+    )
+    name: str | None = Field(
+        default=None,
+        max_length=ValidationConstants.User.MAX_NAME_LENGTH,
+    )
+
+    @field_validator("email", "name", mode="before")
+    @classmethod
+    def strip_outer_whitespace(cls, value: object) -> object:
+        if isinstance(value, str):
+            return value.strip()
+        return value
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, value: str | None) -> str | None:
+        if value is not None and not re.fullmatch(ValidationConstants.User.NAME_REGEX, value):
+            raise ValueError(ErrorMessages.INVALID_NAME_FORMAT)
+        return value
+
+
 class UserRead(BaseModel):
     """User returned by the API; excludes secrets such as password_hash."""
 
