@@ -3,10 +3,12 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
+from app.constants import ResponseMessages
 from app.core.exceptions import (
     BusinessException,
     ConflictException,
     InvalidCredentialsException,
+    NotFoundException,
 )
 from app.schemas import ApiResponse
 
@@ -19,9 +21,9 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         response = ApiResponse(
             success=False,
-            message="Validation failed.",
+            message=ResponseMessages.VALIDATION_FAILED,
             errors=[
-                error.get("msg", "Invalid request.")
+                error.get("msg", ResponseMessages.INVALID_REQUEST)
                 for error in exc.errors()
             ],
         )
@@ -39,7 +41,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         errors = exc.detail if isinstance(exc.detail, list) else [str(exc.detail)]
         response = ApiResponse(
             success=False,
-            message="Request failed.",
+            message=ResponseMessages.REQUEST_FAILED,
             errors=errors,
         )
 
@@ -55,7 +57,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         response = ApiResponse(
             success=False,
-            message="Request failed.",
+            message=ResponseMessages.REQUEST_FAILED,
             errors=[exc.message],
         )
 
@@ -71,7 +73,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         response = ApiResponse(
             success=False,
-            message="Login failed.",
+            message=ResponseMessages.LOGIN_FAILED,
             errors=[exc.message],
         )
 
@@ -87,12 +89,28 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         response = ApiResponse(
             success=False,
-            message="Request failed.",
+            message=ResponseMessages.REQUEST_FAILED,
             errors=[exc.message],
         )
 
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
+            content=response.model_dump(),
+        )
+
+    @app.exception_handler(NotFoundException)
+    async def not_found_exception_handler(
+        request: Request,
+        exc: NotFoundException,
+    ) -> JSONResponse:
+        response = ApiResponse(
+            success=False,
+            message=ResponseMessages.REQUEST_FAILED,
+            errors=[exc.message],
+        )
+
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
             content=response.model_dump(),
         )
 
@@ -103,8 +121,8 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         response = ApiResponse(
             success=False,
-            message="Internal server error.",
-            errors=["An unexpected error occurred."],
+            message=ResponseMessages.INTERNAL_SERVER_ERROR,
+            errors=[ResponseMessages.UNEXPECTED_ERROR_OCCURRED],
         )
 
         return JSONResponse(

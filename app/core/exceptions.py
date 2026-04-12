@@ -12,3 +12,8 @@ class InvalidCredentialsException(BusinessException):
 class ConflictException(BusinessException):
     def __init__(self, message: str = "Conflict occurred."):
         super().__init__(message)
+
+
+class NotFoundException(BusinessException):
+    def __init__(self, message: str = "Resource not found."):
+        super().__init__(message)

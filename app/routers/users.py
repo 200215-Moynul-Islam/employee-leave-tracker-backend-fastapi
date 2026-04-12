@@ -1,10 +1,12 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.constants import ResponseMessages, Role
 from app.dependencies import authorize_roles
 from app.db.dependencies import get_db
-from app.schemas import ApiResponse, UserCreate, UserRead
+from app.schemas import ApiResponse, UserCreate, UserRead, UserUpdate
 from app.services.user_service import UserService
 
 
@@ -47,4 +49,25 @@ async def get_all_employees(
         success=True,
         message=ResponseMessages.EMPLOYEES_RETRIEVED_SUCCESSFULLY,
         data=employees,
+    )
+
+
+@router.patch(
+    "/{user_id}",
+    response_model=ApiResponse[UserRead],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(authorize_roles(Role.ADMIN))],
+)
+async def update_user(
+    user_id: UUID,
+    user_update: UserUpdate,
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[UserRead]:
+    user_service = UserService(db)
+    user = await user_service.update_user(user_id, user_update)
+
+    return ApiResponse[UserRead](
+        success=True,
+        message=ResponseMessages.USER_UPDATED_SUCCESSFULLY,
+        data=user,
     )
