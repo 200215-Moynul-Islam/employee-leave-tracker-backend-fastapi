@@ -29,3 +29,8 @@ class EntityBaseRepository(BaseRepository[TEntityBaseModel], Generic[TEntityBase
         statement = select(self.model).where(self.model.is_deleted.is_(False))
         result = await self.db.execute(statement)
         return list(result.scalars().all())
+
+    async def get_active_by_id(self, entity_id) -> TEntityBaseModel | None:
+        statement = select(self.model).where(self.model.is_deleted.is_(False), self.model.id == entity_id)
+        result = await self.db.execute(statement)
+        return result.scalar_one_or_none()
