@@ -71,3 +71,22 @@ async def update_user(
         message=ResponseMessages.USER_UPDATED_SUCCESSFULLY,
         data=user,
     )
+
+
+@router.delete(
+    "/{user_id}",
+    response_model=ApiResponse[None],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(authorize_roles(Role.ADMIN))],
+)
+async def deactivate_user(
+    user_id: UUID,
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[None]:
+    user_service = UserService(db)
+    await user_service.deactivate_user(user_id)
+
+    return ApiResponse[None](
+        success=True,
+        message=ResponseMessages.USER_DEACTIVATED_SUCCESSFULLY,
+    )
