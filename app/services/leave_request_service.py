@@ -61,3 +61,22 @@ class LeaveRequestService:
         leave_request.is_deleted = True
 
         await self.leave_request_repository.commit()
+
+    async def approve_leave_request(
+        self,
+        leave_request_id: UUID,
+    ) -> LeaveRequestRead:
+        leave_request = await self.leave_request_repository.get_active_by_id(leave_request_id)
+
+        if leave_request is None:
+            raise NotFoundException(ErrorMessages.LEAVE_REQUEST_NOT_FOUND)
+
+        if leave_request.status != LeaveRequestStatus.PENDING:
+            raise BusinessException(
+                ErrorMessages.LEAVE_REQUEST_NOT_PENDING
+            )
+
+        leave_request.status = LeaveRequestStatus.APPROVED
+        await self.leave_request_repository.commit()
+
+        return LeaveRequestRead.model_validate(leave_request)

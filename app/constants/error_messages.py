@@ -8,5 +8,5 @@ class ErrorMessages:
     USER_NOT_FOUND = "User not found."
     INVALID_PASSWORD_FORMAT = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
     LEAVE_REQUEST_NOT_FOUND = "Leave request not found."
-    LEAVE_REQUEST_NOT_PENDING = "Only pending leave requests can be deleted."
+    LEAVE_REQUEST_NOT_PENDING = "Leave request status must be pending."
     INVALID_END_DATE = "End date must be on or after start date."
