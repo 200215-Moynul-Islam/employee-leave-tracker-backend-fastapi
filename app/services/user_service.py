@@ -6,7 +6,7 @@ from app.constants import ErrorMessages, Role
 from app.core.exceptions import ConflictException, NotFoundException
 from app.models import User
 from app.repositories.user_repository import UserRepository
-from app.schemas import PasswordUpdate, UserCreate, UserRead, UserUpdate
+from app.schemas import PasswordUpdate, UserCreate, UserRead, UserUpdate, UserWithLeaveRequestsRead
 from app.utils.password_helper import hash_password
 
 
@@ -36,6 +36,14 @@ class UserService:
         employees = await self.user_repository.get_all_employees()
 
         return [UserRead.model_validate(employee) for employee in employees]
+
+    async def get_user_with_active_leave_requests(self, user_id: UUID) -> UserWithLeaveRequestsRead:
+        user = await self.user_repository.get_active_by_id_with_active_leave_requests(user_id)
+
+        if user is None:
+            raise NotFoundException(ErrorMessages.USER_NOT_FOUND)
+
+        return UserWithLeaveRequestsRead.model_validate(user)
 
     async def update_user(self, user_id: UUID, user_update: UserUpdate) -> UserRead:
         user = await self.user_repository.get_active_by_id(user_id)
