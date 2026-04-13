@@ -9,6 +9,7 @@ class ResponseMessages:
     LEAVE_REQUEST_DELETION_SUCCESS = "Leave request deleted successfully."
     LEAVE_REQUEST_CREATION_SUCCESS = "Leave request created successfully."
     LEAVE_REQUEST_APPROVAL_SUCCESS = "Leave request approved successfully."
+    LEAVE_REQUEST_REJECTION_SUCCESS = "Leave request rejected successfully."
     PASSWORD_UPDATE_SUCCESS = "User password updated successfully."
     VALIDATION_FAILED = "Validation failed."
     REQUEST_FAILED = "Request failed."

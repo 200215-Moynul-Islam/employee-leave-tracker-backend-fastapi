@@ -82,3 +82,25 @@ async def approve_leave_request(
         message=ResponseMessages.LEAVE_REQUEST_APPROVAL_SUCCESS,
         data=leave_request,
     )
+
+
+@router.patch(
+    "/{leave_request_id}/reject",
+    response_model=ApiResponse[LeaveRequestRead],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(authorize_roles(Role.ADMIN))],
+)
+async def reject_leave_request(
+    leave_request_id: UUID,
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[LeaveRequestRead]:
+    leave_request_service = LeaveRequestService(db)
+    leave_request = await leave_request_service.reject_leave_request(
+        leave_request_id=leave_request_id,
+    )
+
+    return ApiResponse[LeaveRequestRead](
+        success=True,
+        message=ResponseMessages.LEAVE_REQUEST_REJECTION_SUCCESS,
+        data=leave_request,
+    )
