@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.constants import ResponseMessages, Role
 from app.dependencies import authorize_roles, validate_token_and_get_payload
 from app.db.dependencies import get_db
-from app.schemas import ApiResponse, PasswordUpdate, UserCreate, UserRead, UserUpdate
+from app.schemas import ApiResponse, PasswordUpdate, UserCreate, UserRead, UserUpdate, UserWithLeaveRequestsRead
 from app.services.user_service import UserService
 
 
@@ -49,6 +49,26 @@ async def get_all_employees(
         success=True,
         message=ResponseMessages.EMPLOYEES_RETRIEVAL_SUCCESS,
         data=employees,
+    )
+
+
+@router.get(
+    "/me/leave-requests",
+    response_model=ApiResponse[UserWithLeaveRequestsRead],
+    status_code=status.HTTP_200_OK,
+)
+async def get_my_leave_requests(
+    db: AsyncSession = Depends(get_db),
+    token_payload: dict[str, str] = Depends(validate_token_and_get_payload),
+) -> ApiResponse[UserWithLeaveRequestsRead]:
+    user_service = UserService(db)
+    current_user_id = UUID(token_payload["sub"])
+    user = await user_service.get_user_with_active_leave_requests(current_user_id)
+
+    return ApiResponse[UserWithLeaveRequestsRead](
+        success=True,
+        message=ResponseMessages.USER_LEAVES_RETRIEVAL_SUCCESS,
+        data=user,
     )
 
 

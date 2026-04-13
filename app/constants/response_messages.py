@@ -6,6 +6,7 @@ class ResponseMessages:
     EMPLOYEES_RETRIEVAL_SUCCESS = "Employees retrieved successfully."
     USER_DELETION_SUCCESS = "User deactivated successfully."
     USER_UPDATE_SUCCESS = "User updated successfully."
+    USER_LEAVES_RETRIEVAL_SUCCESS = "User leave requests retrieved successfully."
     LEAVE_REQUEST_DELETION_SUCCESS = "Leave request deleted successfully."
     LEAVE_REQUEST_CREATION_SUCCESS = "Leave request created successfully."
     LEAVE_REQUESTS_RETRIEVAL_SUCCESS = "Leave requests retrieved successfully."
