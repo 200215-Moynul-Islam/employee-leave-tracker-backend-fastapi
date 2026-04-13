@@ -8,7 +8,7 @@ from app.core.exceptions import BusinessException, NotFoundException
 from app.models import LeaveRequest
 from app.repositories.leave_request_repository import LeaveRequestRepository
 from app.repositories.user_repository import UserRepository
-from app.schemas import LeaveRequestCreate, LeaveRequestRead
+from app.schemas import LeaveRequestCreate, LeaveRequestRead, LeaveRequestWithUserRead
 
 
 class LeaveRequestService:
@@ -37,6 +37,11 @@ class LeaveRequestService:
         await self.leave_request_repository.commit()
 
         return LeaveRequestRead.model_validate(leave_request)
+
+    async def get_all_leave_requests(self) -> list[LeaveRequestWithUserRead]:
+        leave_requests = await self.leave_request_repository.get_all_active_with_users()
+
+        return [LeaveRequestWithUserRead.model_validate(leave_request) for leave_request in leave_requests]
 
     async def delete_leave_request(
         self,

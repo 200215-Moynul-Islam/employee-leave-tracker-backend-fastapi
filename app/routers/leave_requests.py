@@ -6,11 +6,30 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.constants import ResponseMessages, Role
 from app.db.dependencies import get_db
 from app.dependencies import authorize_roles, validate_token_and_get_payload
-from app.schemas import ApiResponse, LeaveRequestCreate, LeaveRequestRead
+from app.schemas import ApiResponse, LeaveRequestCreate, LeaveRequestRead, LeaveRequestWithUserRead
 from app.services.leave_request_service import LeaveRequestService
 
 
 router = APIRouter(prefix="/leave-requests", tags=["Leave Requests"])
+
+
+@router.get(
+    "",
+    response_model=ApiResponse[list[LeaveRequestWithUserRead]],
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(authorize_roles(Role.ADMIN))],
+)
+async def get_all_leave_requests_with_user(
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[list[LeaveRequestWithUserRead]]:
+    leave_request_service = LeaveRequestService(db)
+    leave_requests = await leave_request_service.get_all_leave_requests()
+
+    return ApiResponse[list[LeaveRequestWithUserRead]](
+        success=True,
+        message=ResponseMessages.LEAVE_REQUESTS_RETRIEVAL_SUCCESS,
+        data=leave_requests,
+    )
 
 
 @router.post(

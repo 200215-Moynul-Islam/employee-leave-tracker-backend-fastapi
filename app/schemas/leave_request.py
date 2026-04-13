@@ -4,6 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from app.constants import ErrorMessages, LeaveRequestStatus
+from app.schemas.user import UserRead
 
 
 class LeaveRequestCreate(BaseModel):
@@ -27,3 +28,15 @@ class LeaveRequestRead(BaseModel):
     created_at: date
     status: LeaveRequestStatus
     user_id: UUID
+
+
+class LeaveRequestWithUserRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    start_date: date
+    end_date: date
+    created_at: date
+    status: LeaveRequestStatus
+    user_id: UUID
+    user: UserRead
