@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.constants import ErrorMessages, LeaveRequestStatus, Role
-from app.core.exceptions import NotFoundException
+from app.core.exceptions import BusinessException, NotFoundException
 from app.models import LeaveRequest
 from app.repositories.leave_request_repository import LeaveRequestRepository
 from app.repositories.user_repository import UserRepository
@@ -37,3 +37,27 @@ class LeaveRequestService:
         await self.leave_request_repository.commit()
 
         return LeaveRequestRead.model_validate(leave_request)
+
+    async def delete_leave_request(
+        self,
+        user_id: UUID,
+        leave_request_id: UUID,
+    ) -> None:
+        user = await self.user_repository.get_active_by_id(user_id)
+
+        if user is None:
+            raise NotFoundException(ErrorMessages.USER_NOT_FOUND)
+
+        leave_request = await self.leave_request_repository.get_active_by_id(leave_request_id)
+
+        if leave_request is None or leave_request.user_id != user_id:
+            raise NotFoundException(ErrorMessages.LEAVE_REQUEST_NOT_FOUND)
+
+        if leave_request.status != LeaveRequestStatus.PENDING:
+            raise BusinessException(
+                ErrorMessages.LEAVE_REQUEST_NOT_PENDING
+            )
+
+        leave_request.is_deleted = True
+
+        await self.leave_request_repository.commit()
